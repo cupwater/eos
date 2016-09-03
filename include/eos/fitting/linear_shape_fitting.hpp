@@ -50,14 +50,20 @@ namespace eos {
  * @param[in] affine_camera_matrix A 3x4 affine camera matrix from model to screen-space (should probably be of type CV_32FC1 as all our calculations are done with float).
  * @param[in] landmarks 2D landmarks from an image to fit the model to.
  * @param[in] vertex_ids The vertex ids in the model that correspond to the 2D points.
- * @param[in] base_face The base or reference face from where the fitting is started. Usually this would be the models mean face, which is what will be used if the parameter is not explicitly specified.
+ * @param[in] base_face The base or reference face from where the fitting is started. Usually this would be the models mean face, 
+ 		which is what will be used if the parameter is not explicitly specified.
  * @param[in] lambda The regularisation parameter (weight of the prior towards the mean).
- * @param[in] num_coefficients_to_fit How many shape-coefficients to fit (all others will stay 0). Should be bigger than zero, or boost::none to fit all coefficients.
+ * @param[in] num_coefficients_to_fit How many shape-coefficients to fit (all others will stay 0). Should be bigger than zero, 
+ 		or boost::none to fit all coefficients.
  * @param[in] detector_standard_deviation The standard deviation of the 2D landmarks given (e.g. of the detector used), in pixels.
  * @param[in] model_standard_deviation The standard deviation of the 3D vertex points in the 3D model, projected to 2D (so the value is in pixels).
  * @return The estimated shape-coefficients (alphas).
  */
-inline std::vector<float> fit_shape_to_landmarks_linear(morphablemodel::MorphableModel morphable_model, cv::Mat affine_camera_matrix, std::vector<cv::Vec2f> landmarks, std::vector<int> vertex_ids, cv::Mat base_face=cv::Mat(), float lambda=3.0f, boost::optional<int> num_coefficients_to_fit=boost::optional<int>(), boost::optional<float> detector_standard_deviation=boost::optional<float>(), boost::optional<float> model_standard_deviation=boost::optional<float>())
+inline std::vector<float> fit_shape_to_landmarks_linear(morphablemodel::MorphableModel morphable_model,
+ cv::Mat affine_camera_matrix, std::vector<cv::Vec2f> landmarks, std::vector<int> vertex_ids,
+ cv::Mat base_face=cv::Mat(), float lambda=3.0f, boost::optional<int> num_coefficients_to_fit=boost::optional<int>(),
+  boost::optional<float> detector_standard_deviation=boost::optional<float>(), 
+  boost::optional<float> model_standard_deviation=boost::optional<float>())
 {
 	using cv::Mat;
 	assert(landmarks.size() == vertex_ids.size());
@@ -75,7 +81,9 @@ inline std::vector<float> fit_shape_to_landmarks_linear(morphablemodel::Morphabl
 	Mat V_hat_h = Mat::zeros(4 * num_landmarks, num_coeffs_to_fit, CV_32FC1);
 	int row_index = 0;
 	for (int i = 0; i < num_landmarks; ++i) {
-		Mat basis_rows = morphable_model.get_shape_model().get_normalised_pca_basis(vertex_ids[i]); // In the paper, the not-normalised basis might be used? I'm not sure, check it. It's even a mess in the paper. PH 26.5.2014: I think the normalised basis is fine/better.
+		// In the paper, the not-normalised basis might be used? I'm not sure, check it. It's even a mess in the paper. 
+		//PH 26.5.2014: I think the normalised basis is fine/better.
+		Mat basis_rows = morphable_model.get_shape_model().get_normalised_pca_basis(vertex_ids[i]); 
 		//basisRows.copyTo(V_hat_h.rowRange(rowIndex, rowIndex + 3));
 		basis_rows.colRange(0, num_coeffs_to_fit).copyTo(V_hat_h.rowRange(row_index, row_index + 3));
 		row_index += 4; // replace 3 rows and skip the 4th one, it has all zeros

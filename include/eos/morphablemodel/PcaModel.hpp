@@ -77,6 +77,57 @@ public:
 	};
 
 	/**
+	 * write the model to a file.
+	 * @param[in] the file name need to be writen.
+	 */
+	void saveModel(string filename)
+	{
+		ofstream ouF;
+		ouF.open(filename.c_str());
+		if (!ouF)
+		{
+			cout << "failed to open the file : " << fname << endl;
+			return ;
+		}
+		ouf<<"Mean shape\n";
+		for (int r = 0; r < mean.rows(); r=r+3)
+		{
+			ouf<<mean[r]<<mean[r+1]<<mean[r+2]<<"\n";
+		}
+
+		ouf<<"normalised_pca_basis\n";
+		out<<normalised_pca_basis.rows<<normalised_pca_basis.cols<<"\n";
+		for (int r = 0; r < normalised_pca_basis.rows(); r++)
+		{
+			for(int i=0; i < normalised_pca_basis.clos; i++)
+				ouf<<normalised_pca_basis[r][i];
+			out<<"\n";
+		}
+
+		ouf<<"unnormalised_pca_basis\n";
+		out<<unnormalised_pca_basis.rows<<unnormalised_pca_basis.cols<<"\n";
+		for (int r = 0; r < unnormalised_pca_basis.rows(); r++)
+		{
+			for(int i=0; i < unnormalised_pca_basis.clos; i++)
+				ouf<<unnormalised_pca_basis[r][i];
+			out<<"\n";
+		}
+
+		ouf<<"eigenvalues\n";
+		for (int r = 0; r < eigenvalues.cols(); r++)
+		{
+			ouf<<eigenvalues[r]<<"\n";
+		}
+
+		ouf<<"triangle_list\n";
+		for (int r = 0; r < triangle_list.size(); r++)
+		{
+			std::array<int, 3> temp = triangle_list[r]
+			ouf<<temp[0]<<temp[1]<<temp[2]<<"\n";
+		}
+	}
+
+	/**
 	 * Returns the number of principal components in the model.
 	 *
 	 * @return The number of principal components in the model.

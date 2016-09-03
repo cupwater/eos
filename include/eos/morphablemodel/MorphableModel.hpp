@@ -78,6 +78,15 @@ public:
 	{
 		return shape_model;
 	};
+
+	/**
+	 * write the Morphable Model to file.
+	 * @param[in] filename the name of file writen into
+	 */
+	 void saveModel(string finename)
+	 {
+		 
+	 }
 	
 	/**
 	 * Returns the PCA color (albedo) model of this Morphable Model.
